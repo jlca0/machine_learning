@@ -6,21 +6,18 @@ Implementación educativa y rigurosa de algoritmos clásicos de Machine Learning
 
 ```text
 machine_learning/
-├── pyproject.toml         # Configuración del paquete y dependencias
 ├── README.md              # Documentación del proyecto
-├── .gitignore             # Archivos excluidos del control de versiones
 ├── src/
 │   └── machine_learning/
-│       ├── __init__.py    # Inicializador del paquete principal
-│       ├── pca.py         # Análisis de Componentes Principales (PCA)
-│       ├── linalg.py      # Descomposiciones y herramientas de Álgebra Lineal (QR, SVD)
-│       ├── mlr.py         # Regresión Lineal Múltiple (Multiple Linear Regression)
-│       ├── kNN.py         # Algoritmo de K-Vecinos Más Cercanos (k-Nearest Neighbors)
-│       ├── mds.py         # Escalado Multidimensional (Multidimensional Scaling)
-│       └── ca.py          # Análisis de Conglomerados / Clustering
+│       ├── pca.py         # Análisis de componentes principales (PCA).
+│       ├── linalg.py      # Descomposiciones y herramientas de álgebra lineal (QR, SVD).
+│       ├── mlr.py         # Regresión lineal múltiple.
+│       ├── kNN.py         # Algoritmo de K-Vecinos más cercanos.
+│       ├── mds.py         # Escalado multidimensional.
+│       └── ca.py          # Análisis clúster
 ├── tests/
-│   ├── test_linalg.py     # Pruebas unitarias de álgebra lineal
-│   └── test_models.py    # Pruebas unitarias de los modelos de ML
+│   ├── test_linalg.py     # Pruebas unitarias de álgebra lineal.
+│   └── test_models.py    # Pruebas unitarias de los modelos de ML.
 └── examples/
     └── data/
         └── state.x77.csv
