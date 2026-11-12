@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from pca.pca import PCA
+from .pca import PCA
 
 class MDS:
     def __init__(self, distance: np.ndarray):

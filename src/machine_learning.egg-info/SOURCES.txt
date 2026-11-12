@@ -1,0 +1,15 @@
+README.md
+pyproject.toml
+src/machine_learning/ca.py
+src/machine_learning/kNN.py
+src/machine_learning/linalg.py
+src/machine_learning/mds.py
+src/machine_learning/mlr.py
+src/machine_learning/pca.py
+src/machine_learning.egg-info/PKG-INFO
+src/machine_learning.egg-info/SOURCES.txt
+src/machine_learning.egg-info/dependency_links.txt
+src/machine_learning.egg-info/requires.txt
+src/machine_learning.egg-info/top_level.txt
+tests/test_linalg.py
+tests/test_models.py

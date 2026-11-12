@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from ..linalg.linalg import SVD
+from .linalg import SVD
 
 class PCA():
     def __init__(self, X: np.ndarray):

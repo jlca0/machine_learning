@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
 
-from ..linalg.linalg import QRDecomposition
+from .linalg import QRDecomposition
 
 class LinearRegression:
     def __init__(
