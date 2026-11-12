@@ -37,8 +37,6 @@ Activa el entorno virtual de Python que utilizarás para trabajar con el proyect
 
 ### 3. Instalar el paquete
 
-Instala el paquete en modo editable (`-e`), lo que permite que los cambios realizados en el código fuente se reflejen directamente sin necesidad de reinstalarlo.
-
 ```bash
 pip install -e .
 ```
