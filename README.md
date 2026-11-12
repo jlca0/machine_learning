@@ -1,53 +1,94 @@
-# machine-learning
+# Machine Learning from First Principles
 
-> *[English below](#english)*
+Implementación educativa y rigurosa de algoritmos clásicos de Machine Learning y álgebra lineal desarrollada desde los principios fundamentales (*First Principles*), utilizando únicamente librerías base de computación científica en Python, como **NumPy**, **SciPy** y **Matplotlib**.
 
----
+## 📂 Estructura del Proyecto
 
-## Español
+```text
+machine_learning/
+├── pyproject.toml         # Configuración del paquete y dependencias
+├── README.md              # Documentación del proyecto
+├── .gitignore             # Archivos excluidos del control de versiones
+├── src/
+│   └── machine_learning/
+│       ├── __init__.py    # Inicializador del paquete principal
+│       ├── pca.py         # Análisis de Componentes Principales (PCA)
+│       ├── linalg.py      # Descomposiciones y herramientas de Álgebra Lineal (QR, SVD)
+│       ├── mlr.py         # Regresión Lineal Múltiple (Multiple Linear Regression)
+│       ├── kNN.py         # Algoritmo de K-Vecinos Más Cercanos (k-Nearest Neighbors)
+│       ├── mds.py         # Escalado Multidimensional (Multidimensional Scaling)
+│       └── ca.py          # Análisis de Conglomerados / Clustering
+├── tests/
+│   ├── test_linalg.py     # Pruebas unitarias de álgebra lineal
+│   └── test_models.py    # Pruebas unitarias de los modelos de ML
+└── examples/
+    └── data/
+        └── state.x77.csv
+```
 
-Colección de modelos estadísticos multivariantes para descripción, reducción de dimensionalidad y exploración de datos. Pretende ser una construcción pedagógica y desde cero de los algoritmos básicos en ciencias de datos, con una atención especial a la implementación numérica de los mismos.
+## ⚙️ Requisitos e Instalación
 
-- **Módulo de álgebra lineal**: En `LINALG.py` se puede encontrar una implementación de la **descomposición QR** de una matriz usando **reflexiones de Householder** (regresión lineal) así como una implementación del **método de Jacobi** (análisis de componentes principales).
+Este proyecto requiere **Python 3.9 o superior**. Se recomienda utilizar un entorno virtual para aislar las dependencias.
 
-- **Módulo de regresión**: En `MLR.py` se implementa un modelo de Regresión Lineal Múltiple usando la descomposición QR en la resolución de las ecuaciones normales de la regresión. Incluye diagnósticos de las hipótesis del modelo como estimadores del condicionamiento de la matriz de diseño (colinealidad) y test de hipótesis sobre los estimadores como intervalos de confianza y distancias de Cook (observaciones atípicas).
+### 1. Clonar el repositorio
 
-- **Módulo descriptivo**: En `PCA.py` se implementa un modelo de Análisis de Componentes Principales. Se calcula la matriz de rotación mediante el método de Jacobi y se incluye la visualización del biplot en el espacio de las dos primeras componentes principales.
+Clona el repositorio y sitúate en su directorio raíz.
 
-- **Módulo exploratorio**: En `CA.py` se implementa el método de Clustering Jerárquico. Se define una estructura de datos para clusterings en `CLUSTER.py` y se aplica la variante del algoritmo elegida por el usuario que depende de la distancia original (euclídea, Manhattan) y la hiperdistancia o tipo de enlace (simple, completo, promedio, Ward).
+### 2. Activar el entorno virtual
 
-- **Módulo de grafos**: En `GRAPH.py` se implementan distintos tipos de grafos (simples, dirigidos, con pesos) y algoritmos de búsqueda clásicos (profundidad, anchura, Dijkstra) usando las estructuras de datos correspondientes.
+Activa el entorno virtual de Python que utilizarás para trabajar con el proyecto.
 
-### Roadmap
+### 3. Instalar el paquete
 
-- [ ] **MLR.py** — Tests de normalidad (Shapiro-Wilk, Kolmogorov-Smirnov)
-- [ ] **FA.py** — Análisis Factorial + test de esfericidad (Bartlett)
-- [ ] **MDS.py** — Escalamiento Multidimensional
-- [ ] **DA.py** — Análisis Discriminante
-- [ ] **KMEANS.py** — Clustering K-Means (método no jerárquico)
-- [ ] **ISOMAP.py** — Isomap, reducción de dimensionalidad no lineal apoyada en `GRAPH.py` y `MDS.py`
+Instala el paquete en modo editable (`-e`), lo que permite que los cambios realizados en el código fuente se reflejen directamente sin necesidad de reinstalarlo.
 
----
+```bash
+pip install -e .
+```
 
-## English <a name="english"></a>
+## 🧪 Ejecución de Pruebas
 
-A collection of multivariate statistical models for description, dimensionality reduction, and data exploration. It aims to be a pedagogical, from-scratch implementation of the core algorithms in data science, with special attention to their practical implementation.
+El proyecto incluye una suite de pruebas unitarias configurada con **Pytest**, diseñada para verificar la precisión matemática de los algoritmos mediante su comparación con librerías de referencia como `scikit-learn` y `scipy`.
 
-- **Linear algebra module**: `LINALG.py` contains an implementation of **QR decomposition** of a matrix using **Householder reflections** (linear regression), as well as an implementation of the **Jacobi method** (principal component analysis).
+Para ejecutar todas las pruebas, utiliza el siguiente comando desde el directorio raíz:
 
-- **Regression module**: `MLR.py` implements a Multiple Linear Regression model using QR decomposition to solve the normal equations of the regression. It includes diagnostics for the model's assumptions, such as estimators of the design matrix conditioning (collinearity), and hypothesis tests on the estimators including confidence intervals and Cook's distances (outlier detection).
+```bash
+pytest
+```
 
-- **Descriptive module**: `PCA.py` implements a Principal Component Analysis model. The rotation matrix is computed using the Jacobi method, and a biplot visualization in the space of the first two principal components is included.
+## 🚀 Ejemplo de Uso
 
-- **Exploratory module**: `CA.py` implements Hierarchical Clustering. A data structure for clusterings is defined in `CLUSTER.py`, and the algorithm variant chosen by the user is applied, depending on the original distance metric (Euclidean, Manhattan) and the linkage type (single, complete, average, Ward).
+A continuación, se muestra un ejemplo de cómo importar y utilizar el modelo **PCA (Principal Component Analysis)**.
 
-- **Graph module**: `GRAPH.py` implements various types of graphs (simple, directed, weighted) and classic search algorithms (depth-first, breadth-first, Dijkstra) using their corresponding data structures.
+```python
+import numpy as np
+from machine_learning.pca import PCA
 
-### Roadmap
+# 1. Generar datos sintéticos de prueba 
+rng = np.random.default_rng(42)
+X = rng.normal(size=(40, 5))
 
-- [ ] **MLR.py** — Normality tests (Shapiro-Wilk, Kolmogorov-Smirnov)
-- [ ] **FA.py** — Factor Analysis + sphericity test (Bartlett)
-- [ ] **MDS.py** — Multidimensional Scaling
-- [ ] **DA.py** — Discriminant Analysis
-- [ ] **KMEANS.py** — K-Means Clustering (non-hierarchical method)
-- [ ] **ISOMAP.py** — Isomap, non-linear dimensionality reduction built on `GRAPH.py` and `MDS.py`
+# 2. Ajustar el modelo PCA
+model = PCA(X)
+model.fit()
+
+# 3. Consultar los resultados principales
+print("Varianza explicada por componente:", model.explained_variance_)
+print("Ratio de varianza explicada:", model.explained_variance_ratio_)
+
+# 4. Proyectar los datos en el nuevo espacio de PCs.
+X_reduced = model.transform()
+print("Forma de los datos proyectados:", X_reduced.shape)
+```
+
+## 🛠️ Librerías Utilizadas
+
+- **NumPy**: Operaciones matriciales eficientes y herramientas de álgebra lineal básica.
+- **SciPy**: Herramientas complementarias de optimización y álgebra lineal avanzada (`scipy.linalg`).
+- **Matplotlib**: Visualización de resultados, datos y proyecciones.
+
+## 📝 Licencia
+
+Este proyecto tiene fines estrictamente educativos y académicos.
+
+Siéntete libre de utilizarlo, modificarlo o adaptarlo para tu propio aprendizaje.
