@@ -1,11 +1,8 @@
-import sys, os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
 
-from linalg.linalg import QRDecomposition
+from ..linalg.linalg import QRDecomposition
 
 class LinearRegression:
     def __init__(
@@ -27,14 +24,15 @@ class LinearRegression:
         if cond > 40:
             print(f"Advertencia: número de condición alto ({cond:.2e}), posible colinealidad.")
         Qty = self.X.apply_Qt(self.y)
-        self.beta = self.X.solve(Qty[:self.k+1, :])
+        R = self.X.get_R()[:self.k + 1, :self.k + 1]
+        self.beta = self.X._upwards_solve(R, Qty[:self.k+1])
         self.variance = self.X.solve(np.eye(self.k+1))
         self.residuals = self.y - self.X.get_Q()[:, :self.k+1] @ self.X.apply_Qt(self.y)[:self.k+1, :]
     
     def summary(self) -> None:
         cond = self.X.get_condition_number()
         RSS = float(self.residuals.flatten() @ self.residuals.flatten())
-        TSS = float(sum((self.y - self.y.mean()) ** 2))
+        TSS = float(np.sum((self.y - self.y.mean()) ** 2))
         sigma2 = RSS / (self.n - self.k - 1)
 
         R2 = 1 - RSS / TSS
@@ -80,7 +78,7 @@ class LinearRegression:
         axes[1, 0].set_title("Residuos vs Índice")
 
         axes[1, 1].stem(range(self.n), cooks)
-        threshold = stats.chi2.ppf(0.5, df=self.k+1)
+        threshold = stats.f.ppf(0.5, dfn=self.k + 1, dfd=self.n - self.k - 1)
         axes[1, 1].axhline(threshold, color='red', linestyle='--', label=f"Chi²(k+1) mediana = {threshold:.3f}")
         axes[1, 1].set_xlabel("Índice")
         axes[1, 1].set_ylabel("Distancia de Cook")

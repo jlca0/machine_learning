@@ -1,10 +1,7 @@
-import sys, os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 import numpy as np
 import matplotlib.pyplot as plt
 
-from linalg.linalg import SVD
+from ..linalg.linalg import SVD
 
 class PCA():
     def __init__(self, X: np.ndarray):
@@ -32,13 +29,14 @@ class PCA():
         """
         self.mean_ = self.X.mean(axis=0)
         self.std_ = self.X.std(axis=0, ddof=1)
+        self.std_[self.std_ == 0] = 1.0
         X_centered = (self.X - self.mean_) / self.std_
         svd = SVD(X_centered)
         U, S, V = svd.decompose() 
 
         idx = np.argsort(S**2)[::-1]
         self.components_ = V[:, idx]           # shape (p, p)
-        self.explained_variance_ = (S[idx])**2
+        self.explained_variance_ = (S[idx]**2) / (self.n - 1)
         self.explained_variance_ratio_ = (
             self.explained_variance_ / self.explained_variance_.sum()
         )
@@ -85,10 +83,10 @@ class PCA():
             raise RuntimeError("Call fit() before biplot().")
         if X is None:
             X = self.X
-        projection = self.transform(X, 2)
-        variables = self.components_[:, :2] * np.sqrt(self.explained_variance_[:2] / (self.n - 1))
+        projection = self.transform(X, 2) 
+        variables = self.components_[:, :2] * np.sqrt(self.explained_variance_[:2])
         plt.figure('Biplot')
-        plt.plot(projection[:,0], projection[:,1],'.b')        
+        plt.plot(projection[:,0], projection[:,1],'.b',alpha=0.05)        
         for i in range(self.p):
             plt.arrow(0, 0,
                     variables[i, 0]*scale_factor,

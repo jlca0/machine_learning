@@ -53,7 +53,7 @@ class QRDecomposition:
         m, n = self.H.shape
         Q = np.eye(m)
 
-        for k in range(n-1, -1, -1):
+        for k in range(min(n, m)-1, -1, -1):
             v = self.H[k:, k].reshape(-1, 1)
             scale = self.scale[k]
             Q[k:, :] -= scale * (v @ (v.T @ Q[k:, :]))       
@@ -253,16 +253,14 @@ class QRDecomposition:
             
         return np.sum(np.abs(vector))
 
-class SVD():
-    def __init__(self, A: np.ndarray):
-        """
-        Initializes a SVD object which enables to compute the Singular Value Decomposition (SVD) of a given matrix.
+class SVD:
+    """Singular value decomposition using Jacobi diagonalization of A.T @ A."""
 
-        Attributes:
-            A: (np.ndarray) The matrix to be decomposed.
-        """
-        self.A = A
-        self.nrows, self.ncol = np.shape(self.A)
+    def __init__(self, A: np.ndarray):
+        self.A = np.asarray(A, dtype=float)
+        if self.A.ndim != 2:
+            raise ValueError("A must be a two-dimensional array")
+        self.nrows, self.ncol = self.A.shape
 
     def decompose(self):
         """Performs the SVD of the matrix making use of the Jacobi algorithm and a classic pivot strategy.
@@ -277,7 +275,6 @@ class SVD():
         L = np.sqrt(sing_values)
         U = self.A @ V @ np.diag(1/L)
         W = V
-        self._show_results([L,U,W], 'Singular')
         return U, L, W
 
     def _jacobi(self, matrix:np.ndarray, tol: float, iter_max: int, internal_call = True):
@@ -288,7 +285,6 @@ class SVD():
             matrix: (np.ndarray) The matrix to be decomposed.
             tol: (float) Error tolerance of the iterative method.
             iter_max: (int) Maximum number of iterations.
-            internal_call: (bool) Flag for turning off verbose mode.
 
         Returns:
             np.diag(A0): (np.ndarray) Vector of eigenvalues.
@@ -308,8 +304,6 @@ class SVD():
             A0 = O.T @ A0 @ O
             R = R @ O
             cont += 1
-        if not internal_call:
-            self._show_results([A0, R],'Eigen')
         return np.diag(A0), R
     
     def _search_pivot(self, A0: np.ndarray):
@@ -331,7 +325,7 @@ class SVD():
                     pivot = abs(A0[i, j])
                     p, q = i, j
         return p, q
-    
+
     def _rotation_matrix(self, p: int, q: int, A0: np.ndarray):
         """
         It computes the Givens rotation matrix of a symmetric matrix given a selected entry.
@@ -357,30 +351,12 @@ class SVD():
         return O
 
     def _show_results(self, display: list, case: str):
-        """
-        Once a decomposition is performed it shows its result on screen.
+        """Retained as a compatibility helper; decompositions are silent by default."""
+        return None
 
-        Input:
-            display: (list) A list of matrices/vectors.
-            case: (str) A flag indicating whether a spectral or 
-                        singular value decomposition is being displayed.
-        """
-        if case == 'Eigen':
-            print(f'Eigenvalues: {np.diag(display[0])} \n')
-            print(f'Eigenvectors: {display[1]} \n')
-        elif case == 'Singular':
-            print(f'Singular values: {display[0]} \n')
-            print(f'Left eigenvectors: {display[1]} \n')
-            print(f'Right eigenvectors: {display[2]} \n')
 
-if __name__ == "__main__": 
-    A = np.array([[2, 1, 0, 4],
-                [1, 1, 3, 7],
-                [0, 3, 7, 2],
-                [4, 7, 2, 5]], dtype=float)
-
-    svd = SVD(A)
-    print('This is the SVD decomposition of the matrix A: \n')
-    print(f'{A} \n')
-    svd.decompose()
-    
+if __name__ == "__main__":
+    A = np.array([[2, 1, 0, 4], [1, 1, 3, 7],
+                  [0, 3, 7, 2], [4, 7, 2, 5]], dtype=float)
+    U, S, V = SVD(A).decompose()
+    print("Reconstruction error:", np.linalg.norm(A - U @ np.diag(S) @ V.T))
