@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
 
-from .linalg import QRDecomposition
+from machine_learning.linalg import QRDecomposition
 
 class LinearRegression:
     def __init__(
@@ -21,13 +21,13 @@ class LinearRegression:
         variance matrix and the corresponding residuals.
         """
         cond = self.X.get_condition_number()
-        if cond > 40:
+        if cond**2 > 40:
             print(f"Advertencia: número de condición alto ({cond:.2e}), posible colinealidad.")
         Qty = self.X.apply_Qt(self.y)
         R = self.X.get_R()[:self.k + 1, :self.k + 1]
         self.beta = self.X._upwards_solve(R, Qty[:self.k+1])
         self.variance = self.X.solve(np.eye(self.k+1))
-        self.residuals = self.y - self.X.get_Q()[:, :self.k+1] @ self.X.apply_Qt(self.y)[:self.k+1, :]
+        self.residuals = self.y - self.X.get_Q()[:, :self.k+1] @ Qty[:self.k+1, :]
     
     def summary(self) -> None:
         cond = self.X.get_condition_number()
@@ -62,24 +62,29 @@ class LinearRegression:
 
         fig, axes = plt.subplots(2, 2, figsize=(12, 10))
 
-        axes[0, 0].scatter(y_hat, res, alpha=0.6)
-        axes[0, 0].axhline(0, color='red', linestyle='--')
+        axes[0, 0].scatter(y_hat, res, alpha=0.6,color='lightblue')
+        axes[0, 0].axhline(0, color='tomato', linestyle='--')
         axes[0, 0].set_xlabel("Valores ajustados")
         axes[0, 0].set_ylabel("Residuos")
         axes[0, 0].set_title("Residuos vs Valores ajustados")
 
-        stats.probplot(res, plot=axes[0, 1])
+        (osm, osr), (slope, intercept, r) = stats.probplot(res)
+        axes[0, 1].scatter(osm, osr, color='lightblue', alpha=0.6, s=10)
+        axes[0, 1].plot(osm, slope * osm + intercept, color='tomato', linestyle='--')
+        axes[0, 1].set_xlabel("Cuantiles teóricos")
+        axes[0, 1].set_ylabel("Cuantiles de los residuos")
         axes[0, 1].set_title("Q-Q Plot")
 
-        axes[1, 0].scatter(range(self.n), res, alpha=0.6)
-        axes[1, 0].axhline(0, color='red', linestyle='--')
+        axes[1, 0].scatter(range(self.n), res, alpha=0.6,color='lightblue')
+        axes[1, 0].axhline(0, color='tomato', linestyle='--')
         axes[1, 0].set_xlabel("Índice")
         axes[1, 0].set_ylabel("Residuos")
         axes[1, 0].set_title("Residuos vs Índice")
 
-        axes[1, 1].stem(range(self.n), cooks)
+        axes[1, 1].vlines(range(self.n), 0, cooks, color='lightblue', linewidth=0.5)
+        axes[1, 1].scatter(range(self.n), cooks, color='lightblue', s=8)
         threshold = stats.f.ppf(0.5, dfn=self.k + 1, dfd=self.n - self.k - 1)
-        axes[1, 1].axhline(threshold, color='red', linestyle='--', label=f"Chi²(k+1) mediana = {threshold:.3f}")
+        axes[1, 1].axhline(threshold, color='tomato', linestyle='--', label=f"F(k+1) mediana = {threshold:.3f}")
         axes[1, 1].set_xlabel("Índice")
         axes[1, 1].set_ylabel("Distancia de Cook")
         axes[1, 1].set_title("Distancia de Cook")

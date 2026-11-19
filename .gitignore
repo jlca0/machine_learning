@@ -57,3 +57,5 @@ env/
 .idea/
 *.swp
 *.swo
+
+./src/machine_learning.egg-info

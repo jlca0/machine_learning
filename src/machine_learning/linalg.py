@@ -30,18 +30,17 @@ class QRDecomposition:
             self.R_diag[k] = r_diag
             self.scale[k] = scale
 
-    def get_R(self) -> np.ndarray:
+    def get_R(self):
         """
         Creates an array for the R matrix of the QR decomposition from the QRDecomposition.H matrix.
 
         Returns:
             R: (np.ndarray) R matrix of the QR decomposition 
         """
-        R = self.H.copy()
         n = len(self.R_diag)
-        for k in range(n):
-            R[k, k] = self.R_diag[k]
-        return np.triu(R) 
+        R = np.triu(self.H[:n, :n])
+        R[np.diag_indices(n)] = self.R_diag
+        return R 
 
     def get_Q(self) -> np.ndarray:
         """
@@ -51,12 +50,11 @@ class QRDecomposition:
             Q: (np.ndarray) Q matrix of the QR decomposition 
         """
         m, n = self.H.shape
-        Q = np.eye(m)
-
-        for k in range(min(n, m)-1, -1, -1):
+        cols = min(m, n)
+        Q = np.eye(m, cols)
+        for k in range(cols - 1, -1, -1):
             v = self.H[k:, k].reshape(-1, 1)
-            scale = self.scale[k]
-            Q[k:, :] -= scale * (v @ (v.T @ Q[k:, :]))       
+            Q[k:, :] -= self.scale[k] * (v @ (v.T @ Q[k:, :]))
         return Q
     
     def get_condition_number(
@@ -353,10 +351,3 @@ class SVD:
     def _show_results(self, display: list, case: str):
         """Retained as a compatibility helper; decompositions are silent by default."""
         return None
-
-
-if __name__ == "__main__":
-    A = np.array([[2, 1, 0, 4], [1, 1, 3, 7],
-                  [0, 3, 7, 2], [4, 7, 2, 5]], dtype=float)
-    U, S, V = SVD(A).decompose()
-    print("Reconstruction error:", np.linalg.norm(A - U @ np.diag(S) @ V.T))

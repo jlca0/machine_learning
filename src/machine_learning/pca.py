@@ -31,12 +31,12 @@ class PCA():
         self.std_ = self.X.std(axis=0, ddof=1)
         self.std_[self.std_ == 0] = 1.0
         X_centered = (self.X - self.mean_) / self.std_
-        svd = SVD(X_centered)
+        svd = SVD(X_centered / np.sqrt(self.n - 1))
         U, S, V = svd.decompose() 
 
         idx = np.argsort(S**2)[::-1]
-        self.components_ = V[:, idx]           # shape (p, p)
-        self.explained_variance_ = (S[idx]**2) / (self.n - 1)
+        self.components_ = V[:, idx]         
+        self.explained_variance_ = (S[idx]**2)
         self.explained_variance_ratio_ = (
             self.explained_variance_ / self.explained_variance_.sum()
         )
