@@ -58,4 +58,5 @@ env/
 *.swp
 *.swo
 
-./src/machine_learning.egg-info
+./src/machine_learning.egg-info__pycache__/
+*.pyc
