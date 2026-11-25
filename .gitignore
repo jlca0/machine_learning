@@ -60,3 +60,7 @@ env/
 
 ./src/machine_learning.egg-info__pycache__/
 *.pyc
+examples/.DS_Store
+examples/data/.DS_Store
+examples/data/absorption_ratio.png
+examples/data/pca_finance.ipynb
