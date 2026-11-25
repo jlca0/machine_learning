@@ -21,7 +21,7 @@ class LinearRegression:
         variance matrix and the corresponding residuals.
         """
         cond = self.X.get_condition_number()
-        if cond**2 > 40:
+        if cond > 40:
             print(f"Advertencia: número de condición alto ({cond:.2e}), posible colinealidad.")
         Qty = self.X.apply_Qt(self.y)
         R = self.X.get_R()[:self.k + 1, :self.k + 1]
