@@ -62,23 +62,23 @@ class QRDecomposition:
         max_iter: int = 5
     ) -> float:
         """
-        Returns the condition number of the matrix A, using the Higham estimator for
+        Returns the condition number of the matrix A.T@A, using the Higham estimator for
         the 1-norm of the inverse.
 
         Parameters:
             max_iter: (Optional[int]) Maximum number of iterations for the Higham method.
     
         Returns:
-            cond: (float) Condition number of A.
+            cond: (float) Condition number of A.T@A.
         """
         R = self.get_R()
         n = R.shape[1]
-        R_square = R[:n, :n]  # ← solo la parte cuadrada superior
+        R_square = R[:n, :n]
         
-        norm_A = np.max(np.sum(np.abs(R_square.T @ R_square), axis=0))
-        norm_inv_A = self._Higham_estimator(R_square, max_iter)
+        norm_AtA = norm_AtA = np.max(np.sum(np.abs(R_square), axis=0)) * np.max(np.sum(np.abs(R_square), axis=1)) 
+        norm_inv_AtA = self._Higham_estimator(R_square, max_iter)
         
-        return norm_A * norm_inv_A
+        return norm_AtA * norm_inv_AtA
 
     def solve(
         self,
